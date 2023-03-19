@@ -44,7 +44,7 @@ def test_sample_text_should_write_to_file():
     os.remove(expected_file_name)
 
 def test_should_main_run():
-    main(is_requesting=False)
+    main(infile="movies.txt", is_requesting=False)
     # assert that a failed_movies.txt file was created
     # assert that it contains the movie title "American Beauty"
     assert os.path.exists('failed_movies.txt')
@@ -52,3 +52,21 @@ def test_should_main_run():
         assert 'American Beauty' in f.read()
 
     os.remove('failed_movies.txt')
+
+
+def test_should_main_run_succesfully():
+    if os.path.exists('failed_movies.txt'):
+        os.remove('failed_movies.txt')
+
+    main(is_requesting=False, infile='movies.txt')
+    # assert that a failed_movies.txt file was created
+    # assert that it contains the movie title "American Beauty"
+
+    expected_movies = ['American Beauty', 'The Godfather Part II', 'The Lord of the Rings: The Fellowship of the Ring']
+
+    assert not os.path.exists('failed_movies.txt')
+    for movie in expected_movies:
+        assert os.path.exists(f'{movie}.txt')
+        with open(f'{movie}.txt', 'r') as f:
+            assert f.read() != ''
+        os.remove(f'{movie}.txt')
